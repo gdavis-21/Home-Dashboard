@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-from static.constants import SECRET_KEY, DB_NAME, DB_HOST, DB_USER, DB_PASSWORD
+from .static.constants import SECRET_KEY, DB_NAME, DB_HOST, DB_USER, DB_PASSWORD
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,17 +21,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-kh8@u$1m$u!x60atzf788dahn@p&*@30c2116y^2y8-2s7cpq*"
+SECRET_KEY = SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["postfreserver.postgres.database.azure.com"]
+ALLOWED_HOSTS = ["127.0.0.1", "postfreserver.postgres.database.azure.com"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    "HomeDashboard.apps.HomedashboardConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
