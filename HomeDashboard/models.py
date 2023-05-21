@@ -19,6 +19,7 @@ class Lights(models.Model):
     hallwayCeiling = models.BooleanField()
     garageLeftCeiling = models.BooleanField()
     garageRightCeiling = models.BooleanField()
+    houseState = models.ForeignKey(HouseState, on_delete=models.CASCADE)
 
 class Windows(models.Model):
     b1Left = models.BooleanField()
@@ -33,6 +34,7 @@ class Windows(models.Model):
     hallwayRight = models.BooleanField()
     garageLeft = models.BooleanField()
     garageRight = models.BooleanField()
+    houseState = models.ForeignKey(HouseState, on_delete=models.CASCADE)
 
 class Appliances(models.Model):
     bathroomBathtub = models.BooleanField()
@@ -47,6 +49,7 @@ class Appliances(models.Model):
     b3TV = models.BooleanField()
     hallwayWasher = models.BooleanField()
     hallwayDryer = models.BooleanField()
+    houseState = models.ForeignKey(HouseState, on_delete=models.CASCADE)
 
 class Doors(models.Model):
     b1 = models.BooleanField()
@@ -56,5 +59,6 @@ class Doors(models.Model):
     front = models.BooleanField()
     kitchen = models.BooleanField()
     garage = models.BooleanField()
+    houseState = models.ForeignKey(HouseState, on_delete=models.CASCADE)
     
 
