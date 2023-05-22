@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 import random
+from HomeDashboard.models import HouseState, Lights, Windows, Appliances, Doors
 
 def generateHistoricalData(date1, date2):
     '''
@@ -11,10 +12,11 @@ def generateHistoricalData(date1, date2):
     [
         #Day 1
         {
-        "electricityUsed": 27 #kWatts,
-        "electricityCost": 5.73 #Dollars,
-        "waterUsed": 60.22 #Gallons,
-        "waterCost": 5.22 #Dollars
+        "date": "2020-5-17" (date),
+        "electricityUsed": 27 (double) #kWatts,
+        "electricityCost": 5.73 (double) #Dollars,
+        "waterUsed": 60.22 (double) #Gallons,
+        "waterCost": 5.22 (double) #Dollars
         },
         #Day 2
         {
@@ -30,12 +32,13 @@ def generateHistoricalData(date1, date2):
     while (date1 + timedelta(days=i) <= date2):
         i += 1
         result.append({
+            "date": date1 + timedelta(days=i),
             "electricityUsed": calculateDailyElectricityUsed(date1 + timedelta(days=i)),
             "electricityCost": calculateDailyElectricityCost(date1 + timedelta(days=i)),
             "waterUsed": calculateDailyWaterUsed(date1 + timedelta(days=i)),
             "waterCost": calculateDailyWaterCost(date1 + timedelta(days=i))
         })
-    print(result)
+    return result
 
 electricityUsedWeekday = {
     "Stove": 0.875,
@@ -163,9 +166,13 @@ def calculateDailyWaterCost(date):
     return calculateDailyWaterUsed(date) * COST_OF_1_GALLON
 
 
+# def fetchMonthValue():
+    # q = Lights(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, HouseState())
+    # q.save()
+    # print(Lights.objects.filter(houseState__timestamp__month=5))
 
 # generateHistoricalData(date(2020, 1, 1), date(2020,2,1))
-
+# fetchMonthValue()
 
 
 

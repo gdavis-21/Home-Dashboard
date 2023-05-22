@@ -1,64 +1,102 @@
 from django.db import models
+from django.utils import timezone
 
-class HouseState(models.Model):
-    timestamp = models.DateTimeField(auto_now_add=True)
+class Utilities(models.Model):
+    electricityUsed = models.DecimalField(default = 0, decimal_places=3, max_digits=9)
+    electricityCost = models.DecimalField(default = 0, decimal_places=3, max_digits=9)
+    waterUsed = models.DecimalField(default = 0, decimal_places=3, max_digits=9)
+    waterCost = models.DecimalField(default = 0, decimal_places=3, max_digits=9)
+    date = models.DateField(default = timezone.localdate)
 
-class Lights(models.Model):
-    b1Ceiling = models.BooleanField()
-    b1Lamp = models.BooleanField()
-    b2Ceiling = models.BooleanField()
-    b2Lamp = models.BooleanField()
-    b3Ceilin = models.BooleanField()
-    b3Lamp = models.BooleanField()
-    bathCeiling = models.BooleanField()
-    entranceCeiling = models.BooleanField()
-    lRCeiling = models.BooleanField()
-    lRLeftLamp = models.BooleanField()
-    lRRightLmap = models.BooleanField()
-    kitchenCeiling = models.BooleanField()
-    hallwayCeiling = models.BooleanField()
-    garageLeftCeiling = models.BooleanField()
-    garageRightCeiling = models.BooleanField()
-    houseState = models.ForeignKey(HouseState, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"Date: {self.date}, E Used: {self.electricityUsed}, E Cost: {self.electricityCost}, W Used: {self.waterUsed}, W Cost: {self.waterCost}"
 
-class Windows(models.Model):
-    b1Left = models.BooleanField()
-    b1Top = models.BooleanField()
-    b2Top = models.BooleanField()
-    b2Right = models.BooleanField()
-    b3Top = models.BooleanField()
-    bathLeft = models.BooleanField()
-    entranceLeft = models.BooleanField()
-    lRBottom = models.BooleanField()
-    kitchenBottom = models.BooleanField()
-    hallwayRight = models.BooleanField()
-    garageLeft = models.BooleanField()
-    garageRight = models.BooleanField()
-    houseState = models.ForeignKey(HouseState, on_delete=models.CASCADE)
 
-class Appliances(models.Model):
-    bathroomBathtub = models.BooleanField()
-    bathroomSink = models.BooleanField()
-    lRTV = models.BooleanField()
-    kitchenSink = models.BooleanField()
-    kitchenStove = models.BooleanField()
-    kitchenOven = models.BooleanField()
-    kitchenDishWasher = models.BooleanField()
-    kitchenMicrowave = models.BooleanField()
-    kitchenFridge = models.BooleanField()
-    b3TV = models.BooleanField()
-    hallwayWasher = models.BooleanField()
-    hallwayDryer = models.BooleanField()
-    houseState = models.ForeignKey(HouseState, on_delete=models.CASCADE)
+class BedroomLeft(models.Model):
+    ceilingLight = models.BooleanField(default=False)
+    lamp = models.BooleanField(default = False)
+    leftWindow = models.BooleanField(default = False)
+    topWindow = models.BooleanField(default = False)
+    door = models.BooleanField(default = False)
 
-class Doors(models.Model):
-    b1 = models.BooleanField()
-    b2 = models.BooleanField()
-    b3 = models.BooleanField()
-    bathroom = models.BooleanField()
-    front = models.BooleanField()
-    kitchen = models.BooleanField()
-    garage = models.BooleanField()
-    houseState = models.ForeignKey(HouseState, on_delete=models.CASCADE)
-    
+    def __str__(self):
+        return f"Light: {self.ceilingLight}, Lamp: {self.lamp}, LWindow: {self.leftWindow}, TWindow: {self.topWindow}, Door: {self.door}"
 
+class BedroomRight(models.Model):
+    ceilingLight = models.BooleanField(default = False)
+    lamp = models.BooleanField(default = False)
+    rightWindow = models.BooleanField(default = False)
+    topWindow = models.BooleanField(default = False)
+    door = models.BooleanField(default = False)
+
+    def __str__(self):
+        return f"Light: {self.ceilingLight}, Lamp: {self.lamp}, LWindow: {self.leftWindow}, TWindow: {self.topWindow}, Door: {self.door}"
+
+class BedroomMaster(models.Model):
+    ceilingLight = models.BooleanField(default = False)
+    lamp = models.BooleanField(default = False)
+    tv = models.BooleanField(default = False)
+    topWindow = models.BooleanField(default = False)
+    door = models.BooleanField(default = False)
+
+    def __str__(self):
+        return f"Light: {self.ceilingLight}, Lamp: {self.lamp}, TV: {self.tv}, TWindow: {self.topWindow}, Door: {self.door}"
+
+class Bathroom(models.Model):
+    ceilingLight = models.BooleanField(default = False)
+    bathtub = models.BooleanField(default = False)
+    sink = models.BooleanField(default = False)
+    leftWindow = models.BooleanField(default = False)
+    door = models.BooleanField(default = False)
+
+    def __str__(self):
+        return f"Light: {self.ceilingLight}, Sink: {self.sink}, LWindow: {self.leftWindow}, LWindow: {self.leftWindow}, Door: {self.door}"
+
+class Entrance(models.Model):
+    ceilingLight = models.BooleanField(default = False)
+    leftWindow = models.BooleanField(default = False)
+    door = models.BooleanField(default = False)
+
+    def __str__(self):
+        return f"Light: {self.ceilingLight}, LWindow: {self.leftWindow}, Door: {self.door}"
+
+
+class LivingRoom(models.Model):
+    ceilingLight = models.BooleanField(default = False)
+    leftLamp = models.BooleanField(default = False)
+    rightLamp = models.BooleanField(default = False)
+    tv = models.BooleanField(default = False)
+    bottomWindow = models.BooleanField(default = False)
+
+    def __str__(self):
+        return f"Light: {self.ceilingLight}, LLamp: {self.leftLamp}, RLamp: {self.rightLamp}, TV: {self.tv}, BWindow: {self.bottomWindow}"
+
+class Kitchen(models.Model):
+    ceilingLight = models.BooleanField(default = False)
+    sink = models.BooleanField(default = False)
+    stove = models.BooleanField(default = False)
+    oven = models.BooleanField(default = False)
+    dishwasher = models.BooleanField(default = False)
+    microwave = models.BooleanField(default = False)
+    door = models.BooleanField(default = False)
+
+    def __str__(self):
+        return f"Light: {self.ceilingLight}, Sink: {self.sink}, Stove: {self.stove}, Oven: {self.oven}, Dwasher: {self.dishwasher}, MWave: {self.microwave}, Door: {self.door}"
+
+
+class LaundryRoom(models.Model):
+    ceilingLight = models.BooleanField(default = False)
+    washer = models.BooleanField(default = False)
+    dryer = models.BooleanField(default = False)
+
+    def __str__(self):
+        return f"Light: {self.ceilingLight}, Washer: {self.washer}, Dryer: {self.dryer}"
+
+class Garage(models.Model):
+    ceilingLightLeft = models.BooleanField(default = False)
+    ceilingLightRight = models.BooleanField(default = False)
+    doorLeft = models.BooleanField(default = False)
+    doorRight = models.BooleanField(default = False)
+
+    def __str__(self):
+        return f"LLight: {self.ceilingLightLeft}, RLight: {self.ceilingLightRight}, LDoor: {self.doorLeft}, RDoor: {self.doorRight}"
