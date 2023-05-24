@@ -1,44 +1,7 @@
 from datetime import date, timedelta
 import random
-from HomeDashboard.models import HouseState, Lights, Windows, Appliances, Doors
-
-def generateHistoricalData(date1, date2):
-    '''
-    Generates historical home data from date1 (inclusive) to date2 (inclusive).
-    Params:
-        date1 (datetime.date): The starting day (inclusive) (e.g. datetime.date(2020, 2, 17)).
-        date2 (datetime.date): The ending day (inclusive) (e.g. datetime.date(2020, 5, 17)).
-    Returns (JSON)
-    [
-        #Day 1
-        {
-        "date": "2020-5-17" (date),
-        "electricityUsed": 27 (double) #kWatts,
-        "electricityCost": 5.73 (double) #Dollars,
-        "waterUsed": 60.22 (double) #Gallons,
-        "waterCost": 5.22 (double) #Dollars
-        },
-        #Day 2
-        {
-            ...
-        },
-        ...
-
-    ]
-
-    '''
-    result = []
-    i = 0
-    while (date1 + timedelta(days=i) <= date2):
-        i += 1
-        result.append({
-            "date": date1 + timedelta(days=i),
-            "electricityUsed": calculateDailyElectricityUsed(date1 + timedelta(days=i)),
-            "electricityCost": calculateDailyElectricityCost(date1 + timedelta(days=i)),
-            "waterUsed": calculateDailyWaterUsed(date1 + timedelta(days=i)),
-            "waterCost": calculateDailyWaterCost(date1 + timedelta(days=i))
-        })
-    return result
+from HomeDashboard.models import Utilities
+from django.db.models import Sum
 
 electricityUsedWeekday = {
     "Stove": 0.875,
@@ -51,9 +14,9 @@ electricityUsedWeekday = {
     "ClothesWasher": 6.598,
     "ClothesDryer": 1.5,
     "Fridge": 1.2,
-    "HVAC": (3500 * random.randint(12,22))/1000,
-    "Lights": (60 * random.randint(4,24))/1000,
-    "ExhaustFan": (60 * random.randint(2,6))/1000
+    "HVAC": ((3500 * random.randint(5,22))/1000),
+    "Lights": ((60 * random.randint(4,24))/1000),
+    "ExhaustFan": ((60 * random.randint(2,6))/1000)
 }
 
 electricityUsedWeekend = {
@@ -64,31 +27,31 @@ electricityUsedWeekend = {
     "BedroomTV": 0.4,
     "Bath": 32.175,
     "Fridge": 1.2,
-    "HVAC": (3500 * random.randint(12,22))/1000,
-    "Lights": (60 * random.randint(8,24))/1000,
-    "ExhaustFan": (60 * random.randint(4,10))/1000
+    "HVAC": ((3500 * random.randint(12,22))/1000),
+    "Lights": ((60 * random.randint(8,24))/1000),
+    "ExhaustFan": ((60 * random.randint(4,10))/1000)
 }
 
 waterUsedWeekday = {
-    "Bath": 0.37,
-    "Dishwasher": 0.02,
-    "ClothesWasher": 0.07,
+    "Bath": 110,
+    "Dishwasher": 6 ,
+    "ClothesWasher": 20,
 }
 
 waterUsedWeekend = {
-    "Bath": 0.56
+    "Bath": 165
 }
 
 
-def calculateDailyElectricityUsed(date):
+def calculateDailyElectricityUsed(day):
     """
     Calculates the amount of electricty used in a day.
-    Params: date (datetime.date) - A given date.
+    Params: day (datetime.date) - A given day.
     Returns: (double) The amount of electricity used in a day in kWatts
     """
     electricityUsed = 0
 
-    if (date.weekday() != 5 or date.weekday() != 6):
+    if (day.weekday() != 5 or day.weekday() != 6):
         # It's not the weekend.
         electricityUsed += electricityUsedWeekday["Stove"] 
         electricityUsed += electricityUsedWeekday["Oven"]
@@ -97,16 +60,15 @@ def calculateDailyElectricityUsed(date):
         electricityUsed += electricityUsedWeekday["BedroomTV"]
         electricityUsed += electricityUsedWeekday["Bath"]
         electricityUsed += electricityUsedWeekday["Fridge"]
-        electricityUsed += electricityUsedWeekday["HVAC"]
-        electricityUsed += electricityUsedWeekday["Lights"]
-        electricityUsed += electricityUsedWeekday["ExhaustFan"]
+        electricityUsed += (3500 * random.randint(12,22))/1000 #HVAC
+        electricityUsed += (60 * random.randint(8,24))/1000 #Lights
+        electricityUsed += (60 * random.randint(4,10))/1000 #Exhaust
 
-        if (date.weekday() == 0 or date.weekday() == 1 or date.weekday() == 2 or date.weekday() == 3):
+        if (day.weekday() == 0 or day.weekday() == 1 or day.weekday() == 2 or day.weekday() == 3):
             # Laundry (washing and drying) and dishes are always done on Mondays, Tuesdays, Wednesdays, and Thursdays.
             electricityUsed += electricityUsedWeekday["Dishwasher"]
             electricityUsed += electricityUsedWeekday["ClothesWasher"]
             electricityUsed += electricityUsedWeekday["ClothesDryer"]
-        
     else:
         # It's the weekend.
         electricityUsed += electricityUsedWeekend["Stove"] 
@@ -116,9 +78,9 @@ def calculateDailyElectricityUsed(date):
         electricityUsed += electricityUsedWeekend["BedroomTV"]
         electricityUsed += electricityUsedWeekend["Bath"]
         electricityUsed += electricityUsedWeekend["Fridge"]
-        electricityUsed += electricityUsedWeekend["HVAC"]
-        electricityUsed += electricityUsedWeekend["Lights"]
-        electricityUsed += electricityUsedWeekend["ExhaustFan"]
+        electricityUsed += (3500 * random.randint(12,22))/1000 #HVAC
+        electricityUsed += (60 * random.randint(8,24))/1000 #Lights
+        electricityUsed += (60 * random.randint(4,10))/1000 #Exhaust
     return electricityUsed
         
 
@@ -166,22 +128,81 @@ def calculateDailyWaterCost(date):
     return calculateDailyWaterUsed(date) * COST_OF_1_GALLON
 
 
-# def fetchMonthValue():
-    # q = Lights(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, HouseState())
-    # q.save()
-    # print(Lights.objects.filter(houseState__timestamp__month=5))
+def generateHistoricalData(date1, date2):
+    '''
+    Generates historical home data (electricity and water usage) from date1 (inclusive) to date2 (inclusive).
+    The generated data is saved to the Postgres DB
+    Params:
+        date1 (django.datetime.date): The starting day (inclusive) (e.g. datetime.date(2020, 2, 17)).
+        date2 (django.datetime.date): The ending day (inclusive) (e.g. datetime.date(2020, 5, 17)).
+    Returns: None, although Utility objects (a.k.a. rows) are saved to the DB.
 
-# generateHistoricalData(date(2020, 1, 1), date(2020,2,1))
-# fetchMonthValue()
+    IGNORE
+    [
+        #Day 1
+        {
+        "date": "2020-5-17" (date),
+        "electricityUsed": 27 (double) #kWatts,
+        "electricityCost": 5.73 (double) #Dollars,
+        "waterUsed": 60.22 (double) #Gallons,
+        "waterCost": 5.22 (double) #Dollars
+        },
+        #Day 2
+        {
+            ...
+        },
+        ...
+
+    ]
+    IGNORE
+
+    '''
+    result = []
+    i = 0
+    while (date1 + timedelta(days=i) <= date2):
+        # result.append({
+        #     "date": date1 + timedelta(days=i),
+        #     "electricityUsed": calculateDailyElectricityUsed(date1 + timedelta(days=i)),
+        #     "electricityCost": calculateDailyElectricityCost(date1 + timedelta(days=i)),
+        #     "waterUsed": calculateDailyWaterUsed(date1 + timedelta(days=i)),
+        #     "waterCost": calculateDailyWaterCost(date1 + timedelta(days=i))
+        # })
+
+        utility = Utilities(date = date((date1 + timedelta(i)).year, (date1 + timedelta(i)).month, (date1 + timedelta(i)).day),
+                            electricityUsed = calculateDailyElectricityUsed(date1 + timedelta(days=i)),
+                            electricityCost = calculateDailyElectricityCost(date1 + timedelta(days=i)),
+                            waterUsed = calculateDailyWaterUsed(date1 + timedelta(days=i)),
+                            waterCost = calculateDailyWaterCost(date1 + timedelta(days=i)))   
+        utility.save()                                                                                                                           
+        i += 1
+
+    # return result
+
+def fetchMonthlyConsumption(month, year, cumulative=False):
+    """
+    Fetches the DB entries from the Utilities table where the month and the year match.
+    Params: month (int) The month for the query (e.g. 12 corresponds to December)
+            year (int) The year for the query (e.g. 2023 corresponds to the year 2023)
+            cumulative (bool) Specifies whether to return the cumulative sum for each column (e.g. electricityUsage, electricityCost, waterUsage, waterCost)
+            (e.g. fetchMonthlyConsumption(12, 2023) will fetch all the entries for the month December in the year 2023)
+    Returns: 
+    if cumlative = False, List of Utilities objects, where each object corresponds to a day in the month for the queried year.
+    if cumulative = True, dictionary of cumulative values (electricityUsed__sum, electricityCost__sum, waterUsed__sum, waterCost__sum)
+    """
+
+    if (cumulative):
+        cumulativeValues = {}
+        cumulativeValues.update(Utilities.objects.all().filter(date__month=month, date__year=year).aggregate(Sum("electricityUsed")))
+        cumulativeValues.update(Utilities.objects.all().filter(date__month=month, date__year=year).aggregate(Sum("electricityCost")))
+        cumulativeValues.update(Utilities.objects.all().filter(date__month=month, date__year = year).aggregate(Sum("waterUsed")))
+        cumulativeValues.update( Utilities.objects.all().filter(date__month=month, date__year=year).aggregate(Sum("waterCost")))
+        
+        return cumulativeValues
+    else:
+        return list(Utilities.objects.all().filter(date__month=month, date__year=year))
 
 
-
-
-
-
-
-
-
+    
 
 
 
