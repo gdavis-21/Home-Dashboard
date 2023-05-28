@@ -11,6 +11,10 @@ class Utilities(models.Model):
     def __str__(self):
         return f"Date: {self.date}, E Used: {self.electricityUsed}, E Cost: {self.electricityCost}, W Used: {self.waterUsed}, W Cost: {self.waterCost}"
 
+class Temperature(models.Model):
+    currentTemperature = models.DecimalField(decimal_places=2, max_digits=5)
+    targetTemperature = models.DecimalField(decimal_places=2, max_digits=5)
+    dateTime = models.DateTimeField(default = timezone.localtime)
 
 class BedroomLeft(models.Model):
     ceilingLight = models.BooleanField(default=False)

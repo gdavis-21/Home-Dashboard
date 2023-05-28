@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+{% load static %}
+<html>
+    <head>
+        <link href="{% static 'HomeDashboard/base.css' %}" type="text/css" rel="stylesheet">
+        <link href="{% static 'HomeDashboard/home.css' %}" type="text/css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Sen:wght@700&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <nav class="nav">
+            <div class="nav-icon-title">Home Dashboard+</div>
+            <div class="nav-icon"> 
+                <box-icon name='home-alt-2' color="#EF767A" style="width: 28%; height: auto;"></box-icon>
+                <p class="nav-icon-text">Home</p>
+            </div>
+            <div class="nav-icon"> 
+                <box-icon name='chart' color="#EF767A" style="width: 28%; height: auto;"></box-icon>
+                <p class="nav-icon-text">Analysis</p>
+                </div>
+            <div class="nav-icon">
+                <box-icon class="box" name='cog' color="#EF767A" style="width: 28%; height: auto;"></box-icon>
+                <p class="nav-icon-text">Settings</p>
+            </div>
+            <div class="nav-icon-date">Date</div>
+        </nav>
+        <main class="display">
+            
+        </main>
+        <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+        <script
+			  src="https://code.jquery.com/jquery-3.7.0.min.js"
+			  integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+			  crossorigin="anonymous"></script>
+        <script src="{% static 'HomeDashboard/base.js' %}"></script>
+    </body>
+</html>

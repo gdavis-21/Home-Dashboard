@@ -195,8 +195,8 @@ def fetchMonthlyConsumption(month, year, cumulative=False):
         cumulativeValues.update(Utilities.objects.all().filter(date__month=month, date__year=year).aggregate(Sum("electricityUsed")))
         cumulativeValues.update(Utilities.objects.all().filter(date__month=month, date__year=year).aggregate(Sum("electricityCost")))
         cumulativeValues.update(Utilities.objects.all().filter(date__month=month, date__year = year).aggregate(Sum("waterUsed")))
-        cumulativeValues.update( Utilities.objects.all().filter(date__month=month, date__year=year).aggregate(Sum("waterCost")))
-        
+        cumulativeValues.update(Utilities.objects.all().filter(date__month=month, date__year=year).aggregate(Sum("waterCost")))
+
         return cumulativeValues
     else:
         return list(Utilities.objects.all().filter(date__month=month, date__year=year))
