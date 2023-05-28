@@ -1,3 +1,15 @@
 {% load static %}
-<div style="width:85%; height:70%; background-color:#D9D9D9; position:absolute; top:5%;"> </div>
-<img src="{% static 'HomeDashboard/Floorplan.svg' %}" style="max-width:80%; max-height:80%; position:absolute; top:7.5%;">
+<div class="floorplan"> 
+    <img src="{% static 'HomeDashboard/Floorplan.svg' %}"style="max-width:90%; max-height:90%; position:absolute; top:7.5%; left: 5%">
+</div>
+<div class="temperatures-container">
+    <div style="text-align:center;">
+        <span class="temp-label">Indoor<br>Temperature:</span><br><span class="temp-number">83 °F</span>
+    </div>
+    <div style="text-align:center;">
+        <span class="temp-label">Target Indoor<br>Temperature:</span><br> <button style="width:50px"> - </button> &emsp; <span class="temp-number">89 °F</span> &emsp; <button style="width:50px;"> + </button>
+    </div>
+    <div style="text-align:center;">
+        <span class="temp-label">Outdoor<br>Temperature:</span><br><span class="temp-number">92 °F</span>
+    </div>
+</div>

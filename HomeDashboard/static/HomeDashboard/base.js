@@ -1,3 +1,6 @@
-$("main").load("/homedashboard/home/", () => {
-    console.log("Hello World!");
+$(document).ready( ()=> {
+
+    $("main").load("/homedashboard/home/", () => {
+        
+    })
 })
