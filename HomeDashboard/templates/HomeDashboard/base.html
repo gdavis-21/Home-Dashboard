@@ -5,20 +5,29 @@
         <link href="{% static 'HomeDashboard/base.css' %}" type="text/css" rel="stylesheet">
         <link href="{% static 'HomeDashboard/home.css' %}" type="text/css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Sen:wght@400..800" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined"
+      rel="stylesheet">
+
     </head>
     <body>
         <nav class="nav">
             <div class="nav-icon-title">Home Dashboard+</div>
-            <div class="nav-icon"> 
-                <box-icon name='home-alt-2' color="#EF767A" style="width: 28%; height: auto; margin-bottom:0.5vh;"></box-icon>
+            <div class="nav-icon nav-icon-home"> 
+                <span class="material-icons icon-home" color="#EF767A" style="font-size:36px; margin-bottom:1vh;">
+                    home
+                </span>
                 <p class="nav-icon-text">Home</p>
             </div>
-            <div class="nav-icon"> 
-                <box-icon name='chart' color="#EF767A" style="width: 28%; height: auto; margin-bottom:0.5vh;"></box-icon>
-                <p class="nav-icon-text">Analysis</p>
+            <div class="nav-icon nav-icon-analytics"> 
+                <span class="material-icons-outlined icon-analytics" color="#EF767A" style="font-size:36px; margin-bottom:1vh;">
+                    analytics
+                </span>
+                <p class="nav-icon-text">Analytics</p>
                 </div>
-            <div class="nav-icon">
-                <box-icon class="box" name='cog' color="#EF767A" style="width: 28%; height: auto; margin-bottom:0.5vh;"></box-icon>
+            <div class="nav-icon nav-icon-settings">
+                <span class="material-icons-outlined icon-settings " color="#EF767A" style="font-size:36px; margin-bottom:1vh;">
+                    settings
+                </span>
                 <p class="nav-icon-text">Settings</p>
             </div>
             <div class="nav-icon-date">Date</div>
@@ -26,7 +35,6 @@
         <main class="display">
             
         </main>
-        <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
         <script
 			  src="https://code.jquery.com/jquery-3.7.0.min.js"
 			  integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="

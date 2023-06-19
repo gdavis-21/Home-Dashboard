@@ -1,4 +1,57 @@
-$(document).ready( ()=> {
+$(document).ready(()=> {
+
+    let homeIcon = document.querySelector(".nav-icon-home");
+    let analyticsIcon = document.querySelector(".nav-icon-analytics");
+    let settingsIcon = document.querySelector(".nav-icon-settings");
+    let dateIcon = document.querySelector(".nav-icon-date");
+
+    setInterval(() => {
+        let date = new Date();
+        dateIcon.textContent = date.toLocaleTimeString();
+    }, 1000)
+
+    homeIcon.addEventListener("click", () => {
+        document.querySelector(".icon-analytics").classList.remove("material-icons");
+        document.querySelector(".icon-analytics").classList.add("material-icons-outlined")
+        document.querySelector(".icon-settings").classList.remove("material-icons");
+        document.querySelector(".icon-settings").classList.add("material-icons-outlined")
+        document.querySelector(".icon-home").classList.remove("material-icons-outlined");
+        document.querySelector(".icon-home").classList.add("material-icons");
+
+        // Load the home screen.
+        loadHomeScreen();
+    });
+
+    analyticsIcon.addEventListener("click", () => {
+        document.querySelector(".icon-settings").classList.remove("material-icons");
+        document.querySelector(".icon-settings").classList.add("material-icons-outlined")
+        document.querySelector(".icon-home").classList.remove("material-icons");
+        document.querySelector(".icon-home").classList.add("material-icons-outlined")
+        document.querySelector(".icon-analytics").classList.remove("material-icons-outlined");
+        document.querySelector(".icon-analytics").classList.add("material-icons");
+        
+        // Load the analytics screen.
+        loadAnalyticsScreen();
+    });
+
+    settingsIcon.addEventListener("click", () => {
+        document.querySelector(".icon-analytics").classList.remove("material-icons");
+        document.querySelector(".icon-analytics").classList.add("material-icons-outlined")
+        document.querySelector(".icon-home").classList.remove("material-icons");
+        document.querySelector(".icon-home").classList.add("material-icons-outlined")
+        document.querySelector(".icon-settings").classList.remove("material-icons-outlined");
+        document.querySelector(".icon-settings").classList.add("material-icons");
+
+        // Load the settings screen.
+        loadSettingsScreen();
+        
+    });
+
+    loadHomeScreen();
+})
+
+function loadHomeScreen() {
+
 
     $("main").load("/homedashboard/home/", () => {
 
@@ -8,6 +61,8 @@ $(document).ready( ()=> {
 
         let plusButton = document.getElementById("plus-button");
         let minusButton = document.getElementById("minus-button");
+
+        document.querySelector(".icon-home").setAttribute("type", "solid");
 
         plusButton.addEventListener("click", () => {
             targetTempObject.textContent = Number(targetTempObject.textContent) + 1;
@@ -218,8 +273,19 @@ $(document).ready( ()=> {
         garageDoorRight.addEventListener("click", () => {
             garageDoorRight.style.opacity = Math.abs(garageDoorRight.style.opacity - 1);
         })
+    });
+}
 
+function loadAnalyticsScreen() {
 
+    $("main").load("/homedashboard/analytics/", () => {
 
-    })
-})
+    });
+}
+
+function loadSettingsScreen() {
+
+    $("main").load("/homedashboard/settings/", () => {
+
+    });
+}

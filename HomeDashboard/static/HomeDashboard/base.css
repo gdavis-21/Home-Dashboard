@@ -14,7 +14,7 @@ body {
 
 .nav {
     height: 100%;
-    width: 9%;
+    width: 10%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -27,17 +27,18 @@ body {
 
 .nav-icon-title {
     font-size: 1rem;
-    margin-top:1.5rem;
+    margin-top:1.7rem;
     line-height:1.6;
 }
 
 .nav-icon-date {
+    font-weight: 400;
     font-size: 1rem;
-    margin-bottom:1.5rem;
+    margin-bottom:1.7rem;
 }
 
 .nav-icon {
-    font-size: 0.9rem;
+    font-size: 1rem;
     cursor: pointer;
 }
 
