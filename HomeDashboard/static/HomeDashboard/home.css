@@ -43,9 +43,9 @@
 }
 
 button {
-    background-color: transparent;
-    color:#EF767A;
-    border: none;
+    cursor: pointer;
+    color: #4F6D7A;
+    background-color:#e69fa1;
 }
 
 .floorplan-on {

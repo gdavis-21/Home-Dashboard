@@ -2,13 +2,23 @@ $(document).ready( ()=> {
 
     $("main").load("/homedashboard/home/", () => {
 
-        let indoorTemp = document.getElementById("indoor-temp");
-        let targetTemp = document.getElementById("target-temp");
-        let outdoorTemp = document.getElementById("outdoor-temp");
+        let indoorTempObject = document.getElementById("indoor-temp");
+        let targetTempObject = document.getElementById("target-temp");
+        let outdoorTempObject = document.getElementById("outdoor-temp");
+
+        let plusButton = document.getElementById("plus-button");
+        let minusButton = document.getElementById("minus-button");
+
+        plusButton.addEventListener("click", () => {
+            targetTempObject.textContent = Number(targetTempObject.textContent) + 1;
+        });
+        minusButton.addEventListener("click", () => {
+           targetTempObject.textContent = Number(targetTempObject.textContent) - 1;v
+        });
 
         fetch("https://api.open-meteo.com/v1/forecast?latitude=33.86&longitude=-86.84&current_weather=true&temperature_unit=fahrenheit")
         .then((response) => response.json())
-        .then((data) => outdoorTemp.textContent = data.current_weather.temperature);
+        .then((data) => outdoorTempObject.textContent = Math.round(data.current_weather.temperature));
 
         // Left-Bedroom
         let blCeilingLight = document.getElementById("BL-CeilingLight");
