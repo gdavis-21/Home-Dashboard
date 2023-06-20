@@ -1,0 +1,54 @@
+.graph-background {
+    position:relative; 
+    width: 85%; 
+    height: 70%; 
+    top: 5%; 
+    left:8%; 
+    background: #D9D9D9; 
+    text-align:center; 
+    border: #787878 5px solid;
+}
+
+.month-text {
+    font-family: 'Sen', sans-serif;
+    font-weight: 800;
+    font-size:1.5rem;
+    color: #4F6D7A;
+    position:absolute; 
+    left:50%; 
+    top: 5%; 
+    z-index:10;
+}
+
+.back-button {
+    position: relative;
+    left: -44%;
+    top: 46%;
+    font-size: 48px;
+    font-weight:800;
+    cursor: pointer;
+    color: #4F6D7A;
+    user-select:none;
+    z-index:10;
+}
+
+.forward-button {
+    position:relative;
+    left: 44%;
+    top: 46%;
+    font-size: 48px;
+    font-weight:800;
+    cursor: pointer;
+    color: #4F6D7A;
+    user-select: none;
+    z-index:10;
+}
+
+.chart-container {
+    position:relative; 
+    width:67.5vw; 
+    height:60vh; 
+    left: 7%; 
+    top: -0%;
+    z-index:0;
+}

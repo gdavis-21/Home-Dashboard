@@ -5,10 +5,11 @@ $(document).ready(()=> {
     let settingsIcon = document.querySelector(".nav-icon-settings");
     let dateIcon = document.querySelector(".nav-icon-date");
 
+    // Update clock every 1s.
     setInterval(() => {
         let date = new Date();
         dateIcon.textContent = date.toLocaleTimeString();
-    }, 1000)
+    }, 1000);
 
     homeIcon.addEventListener("click", () => {
         document.querySelector(".icon-analytics").classList.remove("material-icons");
@@ -52,7 +53,6 @@ $(document).ready(()=> {
 
 function loadHomeScreen() {
 
-
     $("main").load("/homedashboard/home/", () => {
 
         let indoorTempObject = document.getElementById("indoor-temp");
@@ -62,13 +62,11 @@ function loadHomeScreen() {
         let plusButton = document.getElementById("plus-button");
         let minusButton = document.getElementById("minus-button");
 
-        document.querySelector(".icon-home").setAttribute("type", "solid");
-
         plusButton.addEventListener("click", () => {
             targetTempObject.textContent = Number(targetTempObject.textContent) + 1;
         });
         minusButton.addEventListener("click", () => {
-           targetTempObject.textContent = Number(targetTempObject.textContent) - 1;v
+           targetTempObject.textContent = Number(targetTempObject.textContent) - 1;
         });
 
         fetch("https://api.open-meteo.com/v1/forecast?latitude=33.86&longitude=-86.84&current_weather=true&temperature_unit=fahrenheit")
@@ -273,6 +271,36 @@ function loadHomeScreen() {
         garageDoorRight.addEventListener("click", () => {
             garageDoorRight.style.opacity = Math.abs(garageDoorRight.style.opacity - 1);
         })
+
+        // Update 
+        setInterval(() => {
+
+            // Count the number of open windows.
+            let openWindows = 0;
+            openWindows += Number(blWindowLeft.style.opacity)
+                        + Number(blWindowTop.style.opacity)
+                        + Number(brWindowRight.style.opacity)
+                        + Number(brWindowTop.style.opacity)
+                        + Number(bathroomWindowRight.style.opacity)
+                        + Number(entranceWindowLeft.style.opacity)
+                        + Number(lVRoomWindowBottom.style.opacity)
+                        + Number(kitchenWindowBottom.style.opacity)
+                        + Number(mBedroomWindowLeft.style.opacity)
+                        + Number(mBedroomWindowRight.style.opacity);
+
+            // Count the number of open doors (leading to the outside).
+            let openDoors = 0;
+            openDoors += Number(entranceDoor.style.opacity) 
+                        + Number(kitchenDoor.style.opacity)
+                        + Number(garageHouseDoor.style.opacity);
+            
+            let newIndoorTemp = calculateTempBeforeHVAC(Number(indoorTempObject.textContent), Number(outdoorTempObject.textContent), openDoors, openWindows);
+            console.log(newIndoorTemp);
+            newIndoorTemp = calculateTempAfterHVAC(newIndoorTemp, Number(targetTempObject.textContent));
+            indoorTempObject.textContent = newIndoorTemp.toFixed(3);
+            console.log(indoorTempObject.textContent);
+            
+        }, 3000);
     });
 }
 
@@ -280,12 +308,185 @@ function loadAnalyticsScreen() {
 
     $("main").load("/homedashboard/analytics/", () => {
 
+        let backButton = document.querySelector(".back-button");
+        let forwardButton = document.querySelector(".forward-button");
+
+        backButton.addEventListener("mousedown", () => {
+            backButton.style.opacity = 0.8;
+        })
+        backButton.addEventListener("mouseup", () => {
+            backButton.style.opacity = 1;
+        })
+        forwardButton.addEventListener("mousedown", () => {
+            forwardButton.style.opacity = 0.8;
+        })
+        forwardButton.addEventListener("mouseup", () => {
+            forwardButton.style.opacity = 1;
+        })
+
+        const ctx = document.getElementById("myChart");
+        new Chart(ctx, {
+            type : 'line',
+            data : {
+                labels : createLabels(),
+                datasets : [
+                        {
+                            
+                            data : [],
+                            label : "Cost",
+                            borderColor : "#118C4F",
+                            backgroundColor : "#57eaa1",
+                            fill : false
+                        },
+                        {
+                            data : [],
+                            label : "Power Usage",
+                            borderColor : "#f7f026",
+                            backgroundColor : "#ffffa3",
+                            fill : false
+                        },
+                        {
+                            data : [],
+                            label : "Water Usage",
+                            borderColor : "#1b95e0",
+                            backgroundColor : "#8ecbf1",
+                            fill : false
+                        },
+                        {
+                            data : [],
+                            label : "Predicted Cost",
+                            borderDash : [5,5],
+                            borderColor : "#118C4F",
+                            backgroundColor : "#57eaa1",
+                            fill : false
+                        },
+                        {
+                            data : [],
+                            label : "Predicted Power Usage",
+                            borderColor : "#f7f026",
+                            borderDash : [5,5],
+                            backgroundColor : "#ffffa3",
+                            fill : false
+                        },
+                        {
+                            data : [],
+                            label : "Predicted Water Usage",
+                            borderDash : [5,5],
+                            borderColor : "#1b95e0",
+                            backgroundColor : "#8ecbf1",
+                            fill : false
+                        }
+                        
+                     
+                    ]
+            },
+            options : {
+                animation : false,
+                maintainAspectRatio : false,
+                plugins: {
+                    title: {
+                        display: false,
+                        text: "January: Cost vs. Power Consumption vs. Water Consumption"
+                    }
+                }
+            }
+            }
+        );
     });
 }
+
+const MONTHS = {
+    1: "January",
+    2: "February",
+    3: "March",
+    4: "April",
+    5: "This Year",
+    6: "June",
+    7: "July",
+    8: "August",
+    9: "September",
+    10: "October",
+    11: "November",
+    12: "December"
+}
+const DAYSINMONTH = {
+    "January": 31,
+    "February": 28,
+    "March": 31,
+    "April": 30,
+    "This Year": 365,
+    "June": 30,
+    "July": 31,
+    "August": 31,
+    "September": 30,
+    "October": 31,
+    "November": 30,
+    "December": 31
+}
+
+let count = 2;
+
+function createLabels() {
+
+    let labels = []
+    for (let i = 1; i <= DAYSINMONTH[MONTHS[count]]; i++) {
+        if (i < 10) {
+            if (count < 10) {
+                labels.push(`0${count}/0${i}`);
+            }
+            else {
+                labels.push(`${count}/0${i}`);
+            }
+        }
+        else if (count < 10) {
+            labels.push(`0${count}/${i}`);
+        }
+        else {
+            labels.push(`${count}/${i}`);
+        }
+        
+    }
+    return labels
+}
+
 
 function loadSettingsScreen() {
 
     $("main").load("/homedashboard/settings/", () => {
 
     });
+}
+
+function calculateTempBeforeHVAC(indoorTemp, outdoorTemp, numberOpenDoors, numberOpenWindows) {
+
+    // Change in temperature due to doors.
+    let diffBetweenOutdoorIndoor = outdoorTemp - indoorTemp;
+    let rateOfChangeDoors = (2 * diffBetweenOutdoorIndoor)/10 * 0.2 * numberOpenDoors;
+    let rateOfChangeWindows = (1 * diffBetweenOutdoorIndoor)/10 * 0.1 * numberOpenWindows;
+
+    if (diffBetweenOutdoorIndoor <= 0) {
+        // It's colder outside than it is inside, thus the internal temperature will decrease.
+        return indoorTemp - rateOfChangeDoors - rateOfChangeWindows;
+    } 
+    else {
+        // It's warmer outside than it is inside, thus the internal temperature will increase.
+        return indoorTemp + rateOfChangeDoors + rateOfChangeWindows
+    }
+}
+
+function calculateTempAfterHVAC(indoorTemp, targetTemp) {
+
+    let differenceIndoorTarget = indoorTemp - targetTemp;
+
+    if (differenceIndoorTarget <= -2) {
+        // The indoor temperature is less than the target temperature, thus the HVAC will warm the house
+        return indoorTemp += (2 * Math.abs(differenceIndoorTarget) / 10)/120;
+    }
+    else if (differenceIndoorTarget >= 2) {
+        // The indoor temperature is greater than the target temperature, thus the HVAC will cool the house
+        return indoorTemp -= (2 * Math.abs(differenceIndoorTarget) / 10)/120;
+    }
+    else {
+        return indoorTemp;
+    }
 }

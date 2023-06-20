@@ -2,11 +2,12 @@
 {% load static %}
 <html>
     <head>
-        <link href="{% static 'HomeDashboard/base.css' %}" type="text/css" rel="stylesheet">
-        <link href="{% static 'HomeDashboard/home.css' %}" type="text/css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Sen:wght@400..800" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined"
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Round"
       rel="stylesheet">
+      <link href="{% static 'HomeDashboard/base.css' %}" type="text/css" rel="stylesheet">
+      <link href="{% static 'HomeDashboard/home.css' %}" type="text/css" rel="stylesheet">
+      <link href="{% static 'HomeDashboard/analytics.css' %}" type="text/css" rel="stylesheet">
 
     </head>
     <body>
@@ -30,7 +31,7 @@
                 </span>
                 <p class="nav-icon-text">Settings</p>
             </div>
-            <div class="nav-icon-date">Date</div>
+            <div class="nav-icon-date">0:00:00 AM</div>
         </nav>
         <main class="display">
             
@@ -40,5 +41,6 @@
 			  integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
 			  crossorigin="anonymous"></script>
         <script src="{% static 'HomeDashboard/base.js' %}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </body>
 </html>
