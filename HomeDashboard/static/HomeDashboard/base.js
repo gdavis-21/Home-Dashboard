@@ -295,103 +295,56 @@ function loadHomeScreen() {
                         + Number(garageHouseDoor.style.opacity);
             
             let newIndoorTemp = calculateTempBeforeHVAC(Number(indoorTempObject.textContent), Number(outdoorTempObject.textContent), openDoors, openWindows);
-            console.log(newIndoorTemp);
             newIndoorTemp = calculateTempAfterHVAC(newIndoorTemp, Number(targetTempObject.textContent));
             indoorTempObject.textContent = newIndoorTemp.toFixed(3);
-            console.log(indoorTempObject.textContent);
             
         }, 3000);
     });
 }
 
 function loadAnalyticsScreen() {
-
-    $("main").load("/homedashboard/analytics/", () => {
+    
+    $("main").load("/homedashboard/analytics/", async () => {
 
         let backButton = document.querySelector(".back-button");
         let forwardButton = document.querySelector(".forward-button");
+        let month = document.querySelector(".month-text");
+        let ctx = document.getElementById("myChart");
+        let chart;
+        let data = await getData(count);
+
+        chart = createChart(chart, ctx, data);
 
         backButton.addEventListener("mousedown", () => {
             backButton.style.opacity = 0.8;
         })
-        backButton.addEventListener("mouseup", () => {
+        backButton.addEventListener("mouseup", async () => {
             backButton.style.opacity = 1;
+            count-=1;
+            chart.destroy();
+            if (count < 1) {
+                count = 12;
+            }
+            data = await getData(count);
+            chart = createChart(chart, ctx, data);
+            month.textContent = MONTHS[count];
         })
         forwardButton.addEventListener("mousedown", () => {
             forwardButton.style.opacity = 0.8;
         })
-        forwardButton.addEventListener("mouseup", () => {
+        forwardButton.addEventListener("mouseup", async () => {
             forwardButton.style.opacity = 1;
+            count+=1;
+            chart.destroy();
+            if (count > 12) {
+                count = 1;
+            }
+            data = await getData(count);
+            console.log(data);
+            chart = createChart(chart, ctx, data);
+            month.textContent = MONTHS[count];
         })
 
-        const ctx = document.getElementById("myChart");
-        new Chart(ctx, {
-            type : 'line',
-            data : {
-                labels : createLabels(),
-                datasets : [
-                        {
-                            
-                            data : [],
-                            label : "Cost",
-                            borderColor : "#118C4F",
-                            backgroundColor : "#57eaa1",
-                            fill : false
-                        },
-                        {
-                            data : [],
-                            label : "Power Usage",
-                            borderColor : "#f7f026",
-                            backgroundColor : "#ffffa3",
-                            fill : false
-                        },
-                        {
-                            data : [],
-                            label : "Water Usage",
-                            borderColor : "#1b95e0",
-                            backgroundColor : "#8ecbf1",
-                            fill : false
-                        },
-                        {
-                            data : [],
-                            label : "Predicted Cost",
-                            borderDash : [5,5],
-                            borderColor : "#118C4F",
-                            backgroundColor : "#57eaa1",
-                            fill : false
-                        },
-                        {
-                            data : [],
-                            label : "Predicted Power Usage",
-                            borderColor : "#f7f026",
-                            borderDash : [5,5],
-                            backgroundColor : "#ffffa3",
-                            fill : false
-                        },
-                        {
-                            data : [],
-                            label : "Predicted Water Usage",
-                            borderDash : [5,5],
-                            borderColor : "#1b95e0",
-                            backgroundColor : "#8ecbf1",
-                            fill : false
-                        }
-                        
-                     
-                    ]
-            },
-            options : {
-                animation : false,
-                maintainAspectRatio : false,
-                plugins: {
-                    title: {
-                        display: false,
-                        text: "January: Cost vs. Power Consumption vs. Water Consumption"
-                    }
-                }
-            }
-            }
-        );
     });
 }
 
@@ -400,7 +353,7 @@ const MONTHS = {
     2: "February",
     3: "March",
     4: "April",
-    5: "This Year",
+    5: "May",
     6: "June",
     7: "July",
     8: "August",
@@ -414,7 +367,7 @@ const DAYSINMONTH = {
     "February": 28,
     "March": 31,
     "April": 30,
-    "This Year": 365,
+    "May": 31,
     "June": 30,
     "July": 31,
     "August": 31,
@@ -424,7 +377,7 @@ const DAYSINMONTH = {
     "December": 31
 }
 
-let count = 2;
+let count = 1;
 
 function createLabels() {
 
@@ -447,6 +400,103 @@ function createLabels() {
         
     }
     return labels
+}
+
+function createChart(chart, ctx, data) {
+    chart = new Chart(ctx, {
+        type : 'line',
+        data : {
+            labels : createLabels(),
+            datasets : [
+                    {  
+                        data : data[0],
+                        label : "Cost",
+                        borderColor : "#118C4F",
+                        backgroundColor : "#57eaa1",
+                        fill : false
+                    },
+                    {
+                        data : data[1],
+                        label : "Power Usage",
+                        borderColor : "#f7f026",
+                        backgroundColor : "#ffffa3",
+                        fill : false
+                    },
+                    {
+                        data : data[2],
+                        label : "Water Usage",
+                        borderColor : "#1b95e0",
+                        backgroundColor : "#8ecbf1",
+                        fill : false
+                    },
+                    {
+                        data : [],
+                        label : "Predicted Cost",
+                        borderDash : [5,5],
+                        borderColor : "#118C4F",
+                        backgroundColor : "#57eaa1",
+                        fill : false
+                    },
+                    {
+                        data : [],
+                        label : "Predicted Power Usage",
+                        borderColor : "#f7f026",
+                        borderDash : [5,5],
+                        backgroundColor : "#ffffa3",
+                        fill : false
+                    },
+                    {
+                        data : [],
+                        label : "Predicted Water Usage",
+                        borderDash : [5,5],
+                        borderColor : "#1b95e0",
+                        backgroundColor : "#8ecbf1",
+                        fill : false
+                    }
+                    
+                 
+                ]
+        },
+        options : {
+            animation : false,
+            maintainAspectRatio : false,
+            plugins: {
+                title: {
+                    display: false,
+                    text: "January: Cost vs. Power Consumption vs. Water Consumption"
+                }
+            }
+        }
+        }
+    );
+    return chart;
+}
+
+async function getData(count) {
+    let result = [];
+    let costArray = [];
+    let powerArray = [];
+    let waterArray = [];
+    await $.get(`${MONTHS[count].toLowerCase()}/`, (data) => {
+        
+        for (let i = 0; i < DAYSINMONTH[MONTHS[count]]; i++) {
+            try {
+                let cost = 0;
+                cost += Number(data[i]["fields"]["electricityCost"]);
+                cost += Number(data[i]["fields"]["waterCost"]);
+                costArray.push(cost);
+                powerArray.push(Number(data[i]["fields"]["electricityUsed"]));
+                waterArray.push(Number(data[i]["fields"]["waterUsed"]));
+            }
+            catch (e) {
+                break;
+            }
+        }
+        result.push(costArray);
+        result.push(powerArray);
+        result.push(waterArray);
+    });
+    return result;
 }
 
 

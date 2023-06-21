@@ -6,4 +6,6 @@ urlpatterns = [
     path("home/", views.home, name="home"),
     path("analytics/", views.analytics, name="analytics"),
     path("settings/", views.settings, name="settings"),
+    path("january/", views.january, name="january"),
+    path("february/", views.february, name="february")
 ]

@@ -202,9 +202,6 @@ def fetchMonthlyConsumption(month, year, cumulative=False):
         return list(Utilities.objects.all().filter(date__month=month, date__year=year))
 
 
-    
-
-
 
 
 

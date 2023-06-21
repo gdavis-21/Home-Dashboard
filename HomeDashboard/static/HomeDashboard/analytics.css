@@ -52,3 +52,31 @@
     top: -0%;
     z-index:0;
 }
+
+.analytics-container {
+    z-index:10;
+    display:flex; 
+    flex-direction:row; 
+    width:100%; 
+    justify-content: space-around;
+    text-align: center;
+    position:relative;
+    top: 10%;
+}
+
+.analytics-column {
+    display:flex; 
+    flex-direction:column;
+    font-family: 'Sen', sans-serif;
+    color: #EF767A;
+    line-height: 3.5;
+    font-weight:800;
+}
+
+.analytics-text {
+    z-index:10;
+}
+
+.units {
+    font-weight:400;
+}
