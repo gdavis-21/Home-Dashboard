@@ -1,7 +1,9 @@
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 import random
 from HomeDashboard.models import Utilities
 from django.db.models import Sum
+import pandas as pd
+from prophet import Prophet
 
 electricityUsedWeekday = {
     "Stove": 0.875,
@@ -202,6 +204,83 @@ def fetchMonthlyConsumption(month, year, cumulative=False):
         return list(Utilities.objects.all().filter(date__month=month, date__year=year))
 
 
+def predictRemainderOfMonth(month, day):
+    """
+    Predicts daily values (cost, power usage, water usage) for the rest of the month.
+    Uses Facebook's Prophet
+    Params: 
+            month (int) - The month we are predicting values for (e.g. 12 would be December).
+            day (int) - The day to start predicting for (e.g. 1 would be the first day of the month), inclusive.
+    Returns: [[predictedDailyCost], [predictedDailyPowerUsage], [predictedDailyWaterUsage]]
+    i.e. predictRemainderOfMonth(1, 11) - Predicts values for cost, power, and water from the 11th to the end of the month.
+    [
+    # Predicted Daily Cost 
+    [_,_,_,_,_,_,_,_,_,_,9.2, 15.3, ...]
+    # Predict Daily Power Usage
+    [_,_,_,_,_,_,_,_,_,_, 126.3, 192.3, ...]
+    # Predict Daily Water Usage
+    [_,_,_,_,_,_,_,_,_,_, 200.1, 176.8, ...]
+    ]
+    """
+
+    # First, fetch the data that Prophet will use to predict the rest of the month (i.e. all previous data)
+    today = date.today()
+
+    cost = []
+    power = []
+    water = []
+    day = []
+    
+    for i in range(1, today.month + 1):
+        # For each previous month, fetch the consumption for that month.
+        consumption = fetchMonthlyConsumption(i, today.year) 
+        # For each day in the month, add values (cost, power, water, date) to corresponding arrays.
+        for value in consumption:
+            cost.append(value.electricityCost + value.waterCost)
+            power.append(value.electricityUsed)
+            water.append(value.waterUsed)
+            day.append(date(value.date.year, value.date.month, value.date.day))
+    
+    dataCost = list(zip(day, cost))
+    dataPower = list(zip(day, power))
+    dataWater = list(zip(day, water))
+
+    dfCost = pd.DataFrame(dataCost, columns=["ds", "y"])
+    dfPower = pd.DataFrame(dataPower, columns=["ds", "y"])
+    dfWater = pd.DataFrame(dataWater, columns=["ds", "y"])
+    
+    modelCost = Prophet()
+    modelCost.fit(dfCost)
+    futureCost = modelCost.make_future_dataframe(365 - int(datetime.now().strftime("%j")), include_history=False)
+    filterCost = futureCost.loc[futureCost["ds"].dt.month == month]
+    forecastCost = modelCost.predict(filterCost)
+
+    returnCost = list(map(lambda x: x[1], forecastCost[["ds", "yhat"]].values.tolist()))
+    if month == today.month:
+        returnCost.insert(0, float(cost[-1]))
+
+    modelPower = Prophet()
+    modelPower.fit(dfPower)
+    futurePower = modelPower.make_future_dataframe(365 - int(datetime.now().strftime("%j")), freq="D", include_history=False)
+    filterPower = futurePower.loc[futurePower["ds"].dt.month == month]
+    forecastPower = modelPower.predict(filterPower)
+
+    returnPower = list(map(lambda x: x[1], forecastPower[["ds", "yhat"]].values.tolist()))
+    if month == today.month:
+        returnPower.insert(0, float(power[-1]))
+
+    modelWater = Prophet()
+    modelWater.fit(dfWater)
+    futureWater = modelWater.make_future_dataframe(365 - int(datetime.now().strftime("%j")), freq="D", include_history=False)
+    filterWater = futureWater.loc[futureWater["ds"].dt.month == month]
+    forecastWater = modelWater.predict(filterWater)
+
+    returnWater = list(map(lambda x: x[1], forecastWater[["ds", "yhat"]].values.tolist()))
+    if month == today.month:
+        returnWater.insert(0, float(water[-1]))
+
+    return [returnCost, returnPower, returnWater]
+    
 
 
 

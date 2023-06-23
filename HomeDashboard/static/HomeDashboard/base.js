@@ -311,9 +311,16 @@ function loadAnalyticsScreen() {
         let month = document.querySelector(".month-text");
         let ctx = document.getElementById("myChart");
         let chart;
+        let today = new Date();
         let data = await getData(count);
+        let predictData = [];
 
-        chart = createChart(chart, ctx, data);
+        if (count >= today.getMonth() + 1 && today.getDate() != DAYSINMONTH[MONTHS[count]]) {
+            // Check if it's the present month or a future month and that it's not the end of the month
+            predictData = await getPredictData(count, currentMonth= count == today.getMonth() + 1 ? true : false)
+        }
+
+        chart = createChart(chart, ctx, data, predictData);
 
         backButton.addEventListener("mousedown", () => {
             backButton.style.opacity = 0.8;
@@ -321,13 +328,18 @@ function loadAnalyticsScreen() {
         backButton.addEventListener("mouseup", async () => {
             backButton.style.opacity = 1;
             count-=1;
+            predictData = [];
             chart.destroy();
             if (count < 1) {
                 count = 12;
             }
-            data = await getData(count);
-            chart = createChart(chart, ctx, data);
             month.textContent = MONTHS[count];
+            data = await getData(count);
+            if (count >= today.getMonth() + 1 && today.getDate() != DAYSINMONTH[MONTHS[count]]) {
+                // Check if it's the present month or a future month and that it's not the end of the month
+                predictData = await getPredictData(count, currentMonth=count == today.getMonth() + 1 ? true : false);
+            }
+            chart = createChart(chart, ctx, data, predictData);
         })
         forwardButton.addEventListener("mousedown", () => {
             forwardButton.style.opacity = 0.8;
@@ -335,14 +347,18 @@ function loadAnalyticsScreen() {
         forwardButton.addEventListener("mouseup", async () => {
             forwardButton.style.opacity = 1;
             count+=1;
+            predictData = [];
             chart.destroy();
             if (count > 12) {
                 count = 1;
             }
-            data = await getData(count);
-            console.log(data);
-            chart = createChart(chart, ctx, data);
             month.textContent = MONTHS[count];
+            data = await getData(count);
+            if (count >= today.getMonth() + 1 && today.getDate() != DAYSINMONTH[MONTHS[count]]) {
+                // Check if it's the present month or a future month and that it's not the end of the month
+                predictData = await getPredictData(count, currentMonth=count == today.getMonth() + 1 ? true : false)
+            }
+            chart = createChart(chart, ctx, data, predictData);
         })
 
     });
@@ -402,7 +418,7 @@ function createLabels() {
     return labels
 }
 
-function createChart(chart, ctx, data) {
+function createChart(chart, ctx, data, predictData) {
     chart = new Chart(ctx, {
         type : 'line',
         data : {
@@ -430,7 +446,7 @@ function createChart(chart, ctx, data) {
                         fill : false
                     },
                     {
-                        data : [],
+                        data : predictData.length > 0 ? predictData[0] : [],
                         label : "Predicted Cost",
                         borderDash : [5,5],
                         borderColor : "#118C4F",
@@ -438,7 +454,7 @@ function createChart(chart, ctx, data) {
                         fill : false
                     },
                     {
-                        data : [],
+                        data : predictData.length > 0 ? predictData[1] : [],
                         label : "Predicted Power Usage",
                         borderColor : "#f7f026",
                         borderDash : [5,5],
@@ -446,7 +462,7 @@ function createChart(chart, ctx, data) {
                         fill : false
                     },
                     {
-                        data : [],
+                        data : predictData.length > 0 ? predictData[2] : [],
                         label : "Predicted Water Usage",
                         borderDash : [5,5],
                         borderColor : "#1b95e0",
@@ -499,6 +515,27 @@ async function getData(count) {
     return result;
 }
 
+async function getPredictData(count, currentMonth=false) {
+    let result = [];
+    if (currentMonth) {
+        await $.get(`predict/`, (data) => {
+            result = data;
+        });
+    }
+    else {
+        await $.get(`predictMonth/${count}/`, (data) => {
+            result = data;
+        });
+    }
+    if (count == new Date().getMonth() + 1) {
+        for (let i = 0; i < new Date().getDate() - 1; i++) {
+            result[0].unshift(NaN);
+            result[1].unshift(NaN);
+            result[2].unshift(NaN);
+        }
+    }
+    return result;
+}
 
 function loadSettingsScreen() {
 
