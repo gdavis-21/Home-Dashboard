@@ -308,38 +308,64 @@ function loadAnalyticsScreen() {
 
         let backButton = document.querySelector(".back-button");
         let forwardButton = document.querySelector(".forward-button");
-        let month = document.querySelector(".month-text");
+        let monthText = document.querySelector(".month-text");
+        let currentCostText = document.getElementById("current-cost");
+        let predictedCostText = document.getElementById("predicted-cost");
+        let currentPowerText = document.getElementById("current-power");
+        let predictedPowerText = document.getElementById("predicted-power");
+        let currentWaterText = document.getElementById("current-water");
+        let predictedWaterText = document.getElementById("predicted-water");
         let ctx = document.getElementById("myChart");
+
         let chart;
         let today = new Date();
-        let data = await getData(count);
-        let predictData = [];
+        let currentData = [[], [], []]
+        let predictedData = [[], [], []];
 
-        if (count >= today.getMonth() + 1 && today.getDate() != DAYSINMONTH[MONTHS[count]]) {
-            // Check if it's the present month or a future month and that it's not the end of the month
-            predictData = await getPredictData(count, currentMonth= count == today.getMonth() + 1 ? true : false)
+        // Only get current data if we're on the current month or a previous month.
+        if (count <= today.getMonth() + 1) {
+            currentData = await getData(count);
+            updateCurrentAnalytics();
         }
 
-        chart = createChart(chart, ctx, data, predictData);
+        // Only predict data if we're on the current month or a future month and if it's not the end of the month
+        if (count >= today.getMonth() + 1 && today.getDate() != DAYSINMONTH[MONTHS[count]]) {
+            predictedData = await getPredictData(count, currentMonth= count == today.getMonth() + 1 ? true : false)
+            updatePredictedAnalytics(currentData);
+        }
+
+        chart = createChart(chart, ctx, currentData, predictedData);
 
         backButton.addEventListener("mousedown", () => {
             backButton.style.opacity = 0.8;
         })
+
         backButton.addEventListener("mouseup", async () => {
             backButton.style.opacity = 1;
             count-=1;
-            predictData = [];
+
+            resetAnalyticText()
+
             chart.destroy();
+
             if (count < 1) {
                 count = 12;
             }
-            month.textContent = MONTHS[count];
-            data = await getData(count);
+            monthText.textContent = MONTHS[count];
+
+            // If it's the current month or a previous month, fetch previous data and set the current analytics at the bottom of the screen.
+            if (count <= today.getMonth() + 1) {
+                currentData = await getData(count);
+                updateCurrentAnalytics();
+            }
+
             if (count >= today.getMonth() + 1 && today.getDate() != DAYSINMONTH[MONTHS[count]]) {
                 // Check if it's the present month or a future month and that it's not the end of the month
-                predictData = await getPredictData(count, currentMonth=count == today.getMonth() + 1 ? true : false);
+                predictedData = await getPredictData(count, currentMonth=count == today.getMonth() + 1 ? true : false);
+                updatePredictedAnalytics(currentData);
             }
-            chart = createChart(chart, ctx, data, predictData);
+            
+            chart = createChart(chart, ctx, currentData, predictedData);
         })
         forwardButton.addEventListener("mousedown", () => {
             forwardButton.style.opacity = 0.8;
@@ -347,20 +373,80 @@ function loadAnalyticsScreen() {
         forwardButton.addEventListener("mouseup", async () => {
             forwardButton.style.opacity = 1;
             count+=1;
-            predictData = [];
+            
+            resetAnalyticText();
+
             chart.destroy();
             if (count > 12) {
                 count = 1;
             }
-            month.textContent = MONTHS[count];
-            data = await getData(count);
+
+            monthText.textContent = MONTHS[count];
+
+            // If it's the current month or a previous month, fetch previous data and set the current analytics at the bottom of the screen.
+            if (count <= today.getMonth() + 1) {
+                currentData = await getData(count);
+                updateCurrentAnalytics();
+            }
+
             if (count >= today.getMonth() + 1 && today.getDate() != DAYSINMONTH[MONTHS[count]]) {
                 // Check if it's the present month or a future month and that it's not the end of the month
-                predictData = await getPredictData(count, currentMonth=count == today.getMonth() + 1 ? true : false)
+                predictedData = await getPredictData(count, currentMonth=count == today.getMonth() + 1 ? true : false);
+                updatePredictedAnalytics(currentData);
             }
-            chart = createChart(chart, ctx, data, predictData);
+            chart = createChart(chart, ctx, currentData, predictedData);
         })
 
+        function updateCurrentAnalytics() {
+            // Update the current analytics at the bottom of the screen.
+            let sumCost = 0;
+            let sumPower = 0;
+            let sumWater = 0;
+
+            currentData[0].forEach(element => {sumCost += element});
+            currentCostText.textContent = sumCost.toFixed(2);
+            currentData[1].forEach(element => {sumPower += element});
+            currentPowerText.textContent = sumPower.toFixed(2);
+            currentData[2].forEach(element => {sumWater += element});
+            currentWaterText.textContent = sumWater.toFixed(2);
+        }
+    
+        function updatePredictedAnalytics(currentData) {
+            // Update the predicted analytics at the bottom of the screen.
+            let predictedCost = 0;
+            let predictedPower = 0;
+            let predictedWater = 0;
+                            
+            predictedData[0].forEach(element => {Number.isNaN(element) ? predictedCost += 0 : predictedCost += element});
+            predictedData[1].forEach(element => {Number.isNaN(element) ? predictedPower += 0 : predictedPower += element});
+            predictedData[2].forEach(element => {Number.isNaN(element) ? predictedWater += 0 : predictedWater += element});
+
+            if (count == today.getMonth() + 1) {
+                predictedCost -= currentData[0][currentData[0].length - 1];
+                predictedPower -= currentData[1][currentData[1].length - 1];
+                predictedWater -= currentData[2][currentData[2].length - 1];
+
+                predictedCost += Number(currentCostText.textContent);
+                predictedPower += Number(currentPowerText.textContent);
+                predictedWater += Number(currentWaterText.textContent);
+            }
+
+            predictedCostText.textContent = predictedCost.toFixed(2);
+            predictedPowerText.textContent = predictedPower.toFixed(2);
+            predictedWaterText.textContent = predictedWater.toFixed(2);
+        }
+    
+        function resetAnalyticText() {
+            // Reset current and predicted usage text values
+            predictedData = [];
+            currentData = []
+            currentCostText.textContent = "";
+            currentPowerText.textContent = "";
+            currentWaterText.textContent = "";
+            predictedCostText.textContent = "";
+            predictedPowerText.textContent = "";
+            predictedWaterText.textContent = "";
+        }
     });
 }
 
@@ -446,7 +532,7 @@ function createChart(chart, ctx, data, predictData) {
                         fill : false
                     },
                     {
-                        data : predictData.length > 0 ? predictData[0] : [],
+                        data : predictData[0],
                         label : "Predicted Cost",
                         borderDash : [5,5],
                         borderColor : "#118C4F",
@@ -454,7 +540,7 @@ function createChart(chart, ctx, data, predictData) {
                         fill : false
                     },
                     {
-                        data : predictData.length > 0 ? predictData[1] : [],
+                        data : predictData[1],
                         label : "Predicted Power Usage",
                         borderColor : "#f7f026",
                         borderDash : [5,5],
@@ -462,7 +548,7 @@ function createChart(chart, ctx, data, predictData) {
                         fill : false
                     },
                     {
-                        data : predictData.length > 0 ? predictData[2] : [],
+                        data : predictData[2],
                         label : "Predicted Water Usage",
                         borderDash : [5,5],
                         borderColor : "#1b95e0",
