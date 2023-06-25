@@ -1,3 +1,6 @@
+let indoorTemp = 81;
+let targetTemp = 89;
+
 $(document).ready(()=> {
 
     let homeIcon = document.querySelector(".nav-icon-home");
@@ -62,11 +65,16 @@ function loadHomeScreen() {
         let plusButton = document.getElementById("plus-button");
         let minusButton = document.getElementById("minus-button");
 
+        indoorTempObject.textContent = indoorTemp.toFixed(3);
+        targetTempObject.textContent = targetTemp;
+
         plusButton.addEventListener("click", () => {
             targetTempObject.textContent = Number(targetTempObject.textContent) + 1;
+            targetTemp = Number(targetTempObject.textContent);
         });
         minusButton.addEventListener("click", () => {
            targetTempObject.textContent = Number(targetTempObject.textContent) - 1;
+           targetTemp = Number(targetTempObject.textContent);
         });
 
         fetch("https://api.open-meteo.com/v1/forecast?latitude=33.86&longitude=-86.84&current_weather=true&temperature_unit=fahrenheit")
@@ -294,9 +302,9 @@ function loadHomeScreen() {
                         + Number(kitchenDoor.style.opacity)
                         + Number(garageHouseDoor.style.opacity);
             
-            let newIndoorTemp = calculateTempBeforeHVAC(Number(indoorTempObject.textContent), Number(outdoorTempObject.textContent), openDoors, openWindows);
-            newIndoorTemp = calculateTempAfterHVAC(newIndoorTemp, Number(targetTempObject.textContent));
-            indoorTempObject.textContent = newIndoorTemp.toFixed(3);
+            indoorTemp = calculateTempBeforeHVAC(Number(indoorTempObject.textContent), Number(outdoorTempObject.textContent), openDoors, openWindows);
+            indoorTemp = calculateTempAfterHVAC(indoorTemp, Number(targetTempObject.textContent));
+            indoorTempObject.textContent = indoorTemp.toFixed(3);
             
         }, 3000);
     });
@@ -321,6 +329,7 @@ function loadAnalyticsScreen() {
         let today = new Date();
         let currentData = [[], [], []]
         let predictedData = [[], [], []];
+        monthText.textContent = MONTHS[count];
 
         // Only get current data if we're on the current month or a previous month.
         if (count <= today.getMonth() + 1) {
@@ -627,6 +636,59 @@ function loadSettingsScreen() {
 
     $("main").load("/homedashboard/settings/", () => {
 
+        let buttonSimulation1 = document.querySelector(".simulation-1");
+        let buttonSimulation2 = document.querySelector(".simulation-2");
+        let buttonSimulation3 = document.querySelector(".simulation-3");
+        let buttonMode1 = document.querySelector(".mode-1");
+        let buttonMode2 = document.querySelector(".mode-2");
+        let buttonMode3 = document.querySelector(".mode-3");
+
+        let token = $(".button-simulations").find("input[name=csrfmiddlewaretoken]").val()
+         // Simulation 1 - Simulate the front-door being open for 60-minutes (assume only the front door is open, no windows).
+        buttonSimulation1.addEventListener("click", () => {
+            fetch("https://api.open-meteo.com/v1/forecast?latitude=33.86&longitude=-86.84&current_weather=true&temperature_unit=fahrenheit")
+            .then((response) => response.json())
+            .then((data) => {
+                let outsideTemp = data.current_weather.temperature;
+                let hvacCycles = 0;
+                for (let i = 0; i < 120; i++) {
+                    // Temperature before the HVAC kicks on.
+                    indoorTemp = calculateTempBeforeHVAC(indoorTemp, outsideTemp, 1, 0);
+                    if (Math.abs(indoorTemp - targetTemp) >= 2) {
+                        hvacCycles += 1;
+                        // Temperature after the HVAC kicks on.
+                        indoorTemp = calculateTempAfterHVAC(indoorTemp, targetTemp);
+                    }
+                }
+                $.post("postNewValues/", {
+                    csrfmiddlewaretoken: token,
+                    cost: (3500 * (hvacCycles/2)/60)/1000 * 0.12,
+                    power: (3500 * (hvacCycles/2)/60)/1000,
+                    water: 0
+                });
+            });
+        });
+
+        // Simulation 2 - Simulate the TVs (both) being on for 2 HR.
+        buttonSimulation2.addEventListener("click", () => {
+            $.post("postNewValues/", {
+                csrfmiddlewaretoken: token,
+                cost: (100 * 0.12 * 2)/1000 + (636 * 0.12 * 2)/1000, 
+                power: (100 * 2)/1000 + (636 * 2)/1000,
+                water: 0
+            });
+        });
+
+        // Simulation 3 - Simulate the shower running for 1 HR (assume 2.1 G per minute, 126 G total, 81.9 G hot, 44.1 G cold).
+        // 4 Minutes to heat 1 G of water, 81.9/x = 1/4, thus takes 327.6 minutes to heat water (5.46 HRs)
+        buttonSimulation3.addEventListener("click", () => {
+            $.post("postNewValues/", {
+                csrfmiddlewaretoken: token,
+                cost: 0.0034 * 126 + (4500 * 0.12 * 5.46)/1000,
+                power: (4500 * 5.46)/1000,
+                water: 126 
+            });
+        });
     });
 }
 

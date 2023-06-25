@@ -1,9 +1,12 @@
 from django.shortcuts import render
-from .utility import fetchMonthlyConsumption, predictRemainderOfMonth
+from .utility import fetchMonthlyConsumption, predictRemainderOfMonth, generateHistoricalData
 from django.core import serializers
 from django.http import HttpResponse
 from datetime import date
 import json
+from .models import Utilities
+from django.views.decorators.csrf import csrf_exempt
+from decimal import Decimal
 
 
 def base(request):
@@ -13,7 +16,13 @@ def home(request):
     return render(request, "HomeDashboard/home.html")
 
 def analytics(request):
-    return render(request, "HomeDashboard/analytics.html")
+    try:
+        Utilities.objects.get(date = date.today())
+    except Utilities.DoesNotExist:
+        today = date.today()
+        generateHistoricalData(date(today.year,today.month,today.day), date(today.year, today.month, today.day))
+    finally:
+        return render(request, "HomeDashboard/analytics.html")
 
 def settings(request):
     return render(request, "HomeDashboard/settings.html")
@@ -99,4 +108,18 @@ def predictMonth(request, month):
     if request.method == "GET":
         data = predictRemainderOfMonth(month, 1)
         return HttpResponse(json.dumps(data), content_type="text/json")
+
+@csrf_exempt
+def postNewValues(request):
+    if request.method == "POST":
+        cost = request.POST.get("cost")
+        power = request.POST.get("power")
+        water = request.POST.get("water")
+        utilitiesToday = Utilities.objects.all().get(date=date.today())
+        utilitiesToday.electricityCost += Decimal(cost)
+        utilitiesToday.electricityUsed += Decimal(power)
+        utilitiesToday.waterUsed += Decimal(water)
+        utilitiesToday.save()
+        return HttpResponse()
+
 

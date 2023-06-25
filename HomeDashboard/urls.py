@@ -19,5 +19,6 @@ urlpatterns = [
     path("november/", views.november, name="november"),
     path("december/", views.december, name="december"),
     path("predict/", views.predict, name="predict"),
-    path("predictMonth/<int:month>/", views.predictMonth, name="predictMonth")
+    path("predictMonth/<int:month>/", views.predictMonth, name="predictMonth"),
+    path("postNewValues/", views.postNewValues, name="postNewValues")
 ]
