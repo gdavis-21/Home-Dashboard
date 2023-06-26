@@ -1,5 +1,14 @@
 let indoorTemp = 81;
 let targetTemp = 89;
+let bedroomLeft = [0,0,0,0,0];
+let bedroomRight = [0,0,0,0,0];
+let bedroomMaster = [0,0,0,0,0,0,0];
+let bathroom = [0,0,0,0,0];
+let entrance = [0,0,0];
+let livingRoom = [0,0,0,0,0];
+let kitchen = [0,0,0,0,0,0,0];
+let laundryRoom = [0,0,0];
+let garage = [0,0,0,0,0];
 
 $(document).ready(()=> {
 
@@ -89,131 +98,160 @@ function loadHomeScreen() {
         let blDoor = document.getElementById("BL-Door");
 
         blCeilingLight.addEventListener("click", () => {
-            blCeilingLight.style.opacity = Math.abs(blCeilingLight.style.opacity - 1);
+            bedroomLeft[0] = Math.abs(bedroomLeft[0] - 1);
+            blCeilingLight.style.opacity = bedroomLeft[0];
         })
         blLamp.addEventListener("click", () => {
-            blLamp.style.opacity = Math.abs(blLamp.style.opacity - 1);
+            bedroomLeft[1] = Math.abs(bedroomLeft[1] - 1);
+            blLamp.style.opacity = bedroomLeft[1];
         })
         blWindowLeft.addEventListener("click", () => {
-            blWindowLeft.style.opacity = Math.abs(blWindowLeft.style.opacity - 1);
+            bedroomLeft[2] = Math.abs(bedroomLeft[2] - 1);
+            blWindowLeft.style.opacity = bedroomLeft[2];
         })
         blWindowTop.addEventListener("click", () => {
-            blWindowTop.style.opacity = Math.abs(blWindowTop.style.opacity - 1);
+            bedroomLeft[3] = Math.abs(bedroomLeft[3] - 1);
+            blWindowTop.style.opacity = bedroomLeft[3];
         })
         blDoor.addEventListener("click", () => {
-            blDoor.style.opacity = Math.abs(blDoor.style.opacity - 1);
+            bedroomLeft[4] = Math.abs(bedroomLeft[4] - 1);
+            blDoor.style.opacity = bedroomLeft[4];
         })
 
         // Right-Bedroom
         let brCeilingLight = document.getElementById("BR-CeilingLight");
         let brLamp = document.getElementById("BR-Lamp");
-        let brWindowTop = document.getElementById("BR-WindowTop");
         let brWindowRight = document.getElementById("BR-WindowRight");
+        let brWindowTop = document.getElementById("BR-WindowTop");
         let brDoor = document.getElementById("BR-Door");
 
         brCeilingLight.addEventListener("click", () => {
-            brCeilingLight.style.opacity = Math.abs(brCeilingLight.style.opacity - 1);
+            bedroomRight[0] = Math.abs(bedroomRight[0] - 1);
+            brCeilingLight.style.opacity = bedroomRight[0];
         })
         brLamp.addEventListener("click", () => {
-            brLamp.style.opacity = Math.abs(brLamp.style.opacity - 1);
-        })
-        brWindowTop.addEventListener("click", () => {
-            brWindowTop.style.opacity = Math.abs(brWindowTop.style.opacity - 1);
+            bedroomRight[1] = Math.abs(bedroomRight[1] - 1);
+            brLamp.style.opacity = bedroomRight[1];
         })
         brWindowRight.addEventListener("click", () => {
-            brWindowRight.style.opacity = Math.abs(brWindowRight.style.opacity - 1);
+            bedroomRight[2] = Math.abs(bedroomRight[2] - 1);
+            brWindowRight.style.opacity = bedroomRight[2];
+        })
+        brWindowTop.addEventListener("click", () => {
+            bedroomRight[3] = Math.abs(bedroomRight[3] - 1);
+            brWindowTop.style.opacity = bedroomRight[3];
         })
         brDoor.addEventListener("click", () => {
-            brDoor.style.opacity = Math.abs(brDoor.style.opacity - 1);
+            bedroomRight[4] = Math.abs(bedroomRight[4] - 1);
+            brDoor.style.opacity = bedroomRight[4];
         })
 
         // Bathroom
-        let bathroomWindowRight = document.getElementById("Bathroom-WindowRight");
         let bathroomLight = document.getElementById("Bathroom-Light");
-        let bathroomDoor = document.getElementById("Bathroom-Door");
         let bathroomSink = document.getElementById("Bathroom-Sink");
+        let bathroomWindowRight = document.getElementById("Bathroom-WindowRight");
+        let bathroomDoor = document.getElementById("Bathroom-Door");
 
         bathroomWindowRight.addEventListener("click", () => {
-            bathroomWindowRight.style.opacity = Math.abs(bathroomWindowRight.style.opacity - 1);
+            bathroom[0] = Math.abs(bathroom[0] - 1);
+            bathroomWindowRight.style.opacity = bathroom[0];
         })
         bathroomLight.addEventListener("click", () => {
-            bathroomLight.style.opacity = Math.abs(bathroomLight.style.opacity - 1);
+            bathroom[1] = Math.abs(bathroom[1] - 1);
+            bathroomLight.style.opacity = bathroom[1];
         })
         bathroomDoor.addEventListener("click", () => {
-            bathroomDoor.style.opacity = Math.abs(bathroomDoor.style.opacity - 1);
+            bathroom[2] = Math.abs(bathroom[2] - 1);
+            bathroomDoor.style.opacity = bathroom[2];
         })
         bathroomSink.addEventListener("click", () => {
-            bathroomSink.style.opacity = Math.abs(bathroomSink.style.opacity - 1);
+            bathroom[3] = Math.abs(bathroom[3] - 1);
+            bathroomSink.style.opacity = bathroom[3];
         })
 
         // Entrance
-        let entranceDoor = document.getElementById("Entrance-Door");
         let entranceLight = document.getElementById("Entrance-Light");
         let entranceWindowLeft = document.getElementById("Entrance-WindowLeft");
+        let entranceDoor = document.getElementById("Entrance-Door");
 
-        entranceDoor.addEventListener("click", () => {
-            entranceDoor.style.opacity = Math.abs(entranceDoor.style.opacity - 1);
-        })
         entranceLight.addEventListener("click", () => {
-            entranceLight.style.opacity = Math.abs(entranceLight.style.opacity - 1);
+            entrance[0] = Math.abs(entrance[0] - 1);
+            entranceLight.style.opacity = entrance[0];
         })
         entranceWindowLeft.addEventListener("click", () => {
-            entranceWindowLeft.style.opacity = Math.abs(entranceWindowLeft.style.opacity - 1);
+            entrance[1] = Math.abs(entrance[1] - 1);
+            entranceWindowLeft.style.opacity = entrance[1];
+        })
+        entranceDoor.addEventListener("click", () => {
+            entrance[2] = Math.abs(entrance[2] - 1);
+            entranceDoor.style.opacity = entrance[2];
         })
 
         // Living-Room
         let lVRoomLight = document.getElementById("LVRoom-Light");
-        let lVRoomLampRight = document.getElementById("LVRoom-LampRight");
         let lVRoomLampLeft = document.getElementById("LVRoom-LampLeft");
+        let lVRoomLampRight = document.getElementById("LVRoom-LampRight");
         let lVRoomTV = document.getElementById("LVRoom-TV");
         let lVRoomWindowBottom = document.getElementById("LVRoom-WindowBottom");
 
         lVRoomLight.addEventListener("click", () => {
-            lVRoomLight.style.opacity = Math.abs(lVRoomLight.style.opacity - 1);
-        })
-        lVRoomLampRight.addEventListener("click", () => {
-            lVRoomLampRight.style.opacity = Math.abs(lVRoomLampRight.style.opacity - 1);
-        })
+            livingRoom[0] = Math.abs(livingRoom[0] - 1);
+            lVRoomLight.style.opacity = livingRoom[0];
+        });
         lVRoomLampLeft.addEventListener("click", () => {
-            lVRoomLampLeft.style.opacity = Math.abs(lVRoomLampLeft.style.opacity - 1);
-        })
+            livingRoom[1] = Math.abs(livingRoom[1] - 1);
+            lVRoomLampLeft.style.opacity = livingRoom[1];
+        });
+        lVRoomLampRight.addEventListener("click", () => {
+            livingRoom[2] = Math.abs(livingRoom[2] - 1);
+            lVRoomLampRight.style.opacity = livingRoom[2];
+        });
         lVRoomTV.addEventListener("click", () => {
-            lVRoomTV.style.opacity = Math.abs(lVRoomTV.style.opacity - 1);
-        })
+            livingRoom[3] = Math.abs(livingRoom[3] - 1);
+            lVRoomTV.style.opacity = livingRoom[3];
+        });
         lVRoomWindowBottom.addEventListener("click", () => {
-            lVRoomWindowBottom.style.opacity = Math.abs(lVRoomWindowBottom.style.opacity - 1);
-        })
+            livingRoom[4] = Math.abs(livingRoom[4] - 1);
+            lVRoomWindowBottom.style.opacity = livingRoom[4];
+        });
 
         // Kitchen
-        let kitchenWindowBottom = document.getElementById("Kitchen-WindowBottom");
-        let kitchenDoor = document.getElementById("Kitchen-Door");
         let kitchenLight = document.getElementById("Kitchen-Light");
+        let kitchenSink = document.getElementById("Kitchen-Sink");
         let kitchenStove = document.getElementById("Kitchen-Stove");
         let kitchenMicrowave = document.getElementById("Kitchen-Microwave");
         let kitchenToaster = document.getElementById("Kitchen-Toaster");
-        let kitchenSink = document.getElementById("Kitchen-Sink");
+        let kitchenWindowBottom = document.getElementById("Kitchen-WindowBottom");
+        let kitchenDoor = document.getElementById("Kitchen-Door");
 
-        kitchenWindowBottom.addEventListener("click", () => {
-            kitchenWindowBottom.style.opacity = Math.abs(kitchenWindowBottom.style.opacity - 1);
-        })
-        kitchenDoor.addEventListener("click", () => {
-            kitchenDoor.style.opacity = Math.abs(kitchenDoor.style.opacity - 1);
-        })
         kitchenLight.addEventListener("click", () => {
-            kitchenLight.style.opacity = Math.abs(kitchenLight.style.opacity - 1);
-        })
-        kitchenMicrowave.addEventListener("click", () => {
-            kitchenMicrowave.style.opacity = Math.abs(kitchenMicrowave.style.opacity - 1);
-        })
-        kitchenToaster.addEventListener("click", () => {
-            kitchenToaster.style.opacity = Math.abs(kitchenToaster.style.opacity - 1);
-        })
-        kitchenStove.addEventListener("click", () => {
-            kitchenStove.style.opacity = Math.abs(kitchenStove.style.opacity - 1);
-        })
+            kitchen[0] = Math.abs(kitchen[0] - 1);
+            kitchenLight.style.opacity = kitchen[0];
+        });
         kitchenSink.addEventListener("click", () => {
-            kitchenSink.style.opacity = Math.abs(kitchenSink.style.opacity - 1);
-        })
+            kitchen[1] = Math.abs(kitchen[1] - 1);
+            kitchenSink.style.opacity = kitchen[1];
+        });
+        kitchenStove.addEventListener("click", () => {
+            kitchen[2] = Math.abs(kitchen[2] - 1);
+            kitchenStove.style.opacity = kitchen[2];
+        });
+        kitchenMicrowave.addEventListener("click", () => {
+            kitchen[3] = Math.abs(kitchen[3] - 1);
+            kitchenMicrowave.style.opacity = kitchen[3];
+        });
+        kitchenToaster.addEventListener("click", () => {
+            kitchen[4] = Math.abs(kitchen[4] - 1);
+            kitchenToaster.style.opacity = kitchen[4];
+        });
+        kitchenWindowBottom.addEventListener("click", () => {
+            kitchen[5] = Math.abs(kitchen[5] - 1);
+            kitchenWindowBottom.style.opacity = kitchen[5];
+        });
+        kitchenDoor.addEventListener("click", () => {
+            kitchen[6] = Math.abs(kitchen[6] - 1);
+            kitchenDoor.style.opacity = kitchen[6];
+        });
 
         // Hallway
         let hallwayLight = document.getElementById("Hallway-Light");
@@ -221,64 +259,131 @@ function loadHomeScreen() {
         let hallwayDryer = document.getElementById("Hallway-Dryer");
 
         hallwayLight.addEventListener("click", () => {
-            hallwayLight.style.opacity = Math.abs(hallwayLight.style.opacity - 1);
-        })
+            laundryRoom[0] = Math.abs(laundryRoom[0] - 1);
+            hallwayLight.style.opacity = laundryRoom[0];
+        });
         hallwayWasher.addEventListener("click", () => {
-            hallwayWasher.style.opacity = Math.abs(hallwayWasher.style.opacity - 1);
-        })
+            laundryRoom[1] = Math.abs(laundryRoom[1] - 1);
+            hallwayWasher.style.opacity = laundryRoom[1];
+        });
         hallwayDryer.addEventListener("click", () => {
-            hallwayDryer.style.opacity = Math.abs(hallwayDryer.style.opacity - 1);
-        })
+            laundryRoom[2] = Math.abs(laundryRoom[2] - 1);
+            hallwayDryer.style.opacity = laundryRoom[2];
+        });
 
         // Master-Bedroom 
-        let mBedroomDoor = document.getElementById("MBedroom-Door");
         let mBedroomLight = document.getElementById("MBedroom-Light");
+        let mBedroomLamp = document.getElementById("MBedroom-Lamp");
         let mBedroomTV = document.getElementById("MBedroom-TV");
         let mBedroomWindowLeft = document.getElementById("MBedroom-WindowLeft");
         let mBedroomWindowRight = document.getElementById("MBedroom-WindowRight");
-        let mBedroomLamp = document.getElementById("MBedroom-Lamp");
+        let mBedroomDoor = document.getElementById("MBedroom-Door");
 
-        mBedroomDoor.addEventListener("click", () => {
-            mBedroomDoor.style.opacity = Math.abs(mBedroomDoor.style.opacity - 1);
-        })
         mBedroomLight.addEventListener("click", () => {
-            mBedroomLight.style.opacity = Math.abs(mBedroomLight.style.opacity - 1);
-        })
-        mBedroomTV.addEventListener("click", () => {
-            mBedroomTV.style.opacity = Math.abs(mBedroomTV.style.opacity - 1);
-        })
-        mBedroomWindowLeft.addEventListener("click", () => {
-            mBedroomWindowLeft.style.opacity = Math.abs(mBedroomWindowLeft.style.opacity - 1);
-        })
-        mBedroomWindowRight.addEventListener("click", () => {
-            mBedroomWindowRight.style.opacity = Math.abs(mBedroomWindowRight.style.opacity - 1);
-        })
+            bedroomMaster[0] = Math.abs(bedroomMaster[0] - 1);
+            mBedroomLight.style.opacity = bedroomMaster[0];
+        });
         mBedroomLamp.addEventListener("click", () => {
-            mBedroomLamp.style.opacity = Math.abs(mBedroomLamp.style.opacity - 1);
-        })
+            bedroomMaster[1] = Math.abs(bedroomMaster[1] - 1);
+            mBedroomLamp.style.opacity = bedroomMaster[1];
+        });
+        mBedroomTV.addEventListener("click", () => {
+            bedroomMaster[2] = Math.abs(bedroomMaster[2] - 1);
+            mBedroomTV.style.opacity = bedroomMaster[2];
+        });
+        mBedroomWindowLeft.addEventListener("click", () => {
+            bedroomMaster[3] = Math.abs(bedroomMaster[3] - 1);
+            mBedroomWindowLeft.style.opacity = bedroomMaster[3];
+        });
+        mBedroomWindowRight.addEventListener("click", () => {
+            bedroomMaster[4] = Math.abs(bedroomMaster[4] - 1);
+            mBedroomWindowRight.style.opacity = bedroomMaster[4];
+        });
+        mBedroomDoor.addEventListener("click", () => {
+            bedroomMaster[5] = Math.abs(bedroomMaster[5] - 1);
+            mBedroomDoor.style.opacity = bedroomMaster[5];
+        });
 
         // Garage
         let garageHouseDoor = document.getElementById("Garage-HouseDoor");
         let garageLightLeft = document.getElementById("Garage-LightLeft");
-        let GarageLightRight = document.getElementById("Garage-LightRight");
+        let garageLightRight = document.getElementById("Garage-LightRight");
         let garageDoorLeft = document.getElementById("Garage-DoorLeft");
         let garageDoorRight = document.getElementById("Garage-DoorRight");
 
         garageHouseDoor.addEventListener("click", () => {
-            garageHouseDoor.style.opacity = Math.abs(garageHouseDoor.style.opacity - 1);
+            garage[0] = Math.abs(garage[0] - 1);
+            garageHouseDoor.style.opacity = garage[0];
         })
         garageLightLeft.addEventListener("click", () => {
-            garageLightLeft.style.opacity = Math.abs(garageLightLeft.style.opacity - 1);
+            garage[1] = Math.abs(garage[1] - 1);
+            garageLightLeft.style.opacity = garage[1];
         })
-        GarageLightRight.addEventListener("click", () => {
-            GarageLightRight.style.opacity = Math.abs(GarageLightRight.style.opacity - 1);
+        garageLightRight.addEventListener("click", () => {
+            garage[2] = Math.abs(garage[2] - 1);
+            garageLightRight.style.opacity = garage[2];
         })
         garageDoorLeft.addEventListener("click", () => {
-            garageDoorLeft.style.opacity = Math.abs(garageDoorLeft.style.opacity - 1);
+            garage[3] = Math.abs(garage[3] - 1);
+            garageDoorLeft.style.opacity = garage[3];
         })
         garageDoorRight.addEventListener("click", () => {
-            garageDoorRight.style.opacity = Math.abs(garageDoorRight.style.opacity - 1);
+            garage[4] = Math.abs(garage[4] - 1);
+            garageDoorRight.style.opacity = garage[4];
         })
+
+        // Read the house stored states
+        blCeilingLight.style.opacity = bedroomLeft[0];
+        blLamp.style.opacity = bedroomLeft[1];
+        blWindowLeft.style.opacity = bedroomLeft[2];
+        blWindowTop.style.opacity = bedroomLeft[3];
+        blDoor.style.opacity = bedroomLeft[4];
+
+        brCeilingLight.style.opacity = bedroomRight[0];
+        brLamp.style.opacity = bedroomRight[1];
+        brWindowRight.style.opacity = bedroomRight[2];
+        brWindowTop.style.opacity = bedroomRight[3];
+        brDoor.style.opacity = bedroomRight[4];
+
+        mBedroomLight.style.opacity = bedroomMaster[0];
+        mBedroomLamp.style.opacity = bedroomMaster[1];
+        mBedroomTV.style.opacity = bedroomMaster[2];
+        mBedroomWindowLeft.style.opacity = bedroomMaster[3];
+        mBedroomWindowRight.style.opacity = bedroomMaster[4];
+        mBedroomDoor.style.opacity = bedroomMaster[5];
+
+        bathroomLight.style.opacity = bathroom[0];
+        bathroomSink.style.opacity = bathroom[1];
+        bathroomWindowRight.style.opacity = bathroom[2];
+        bathroomDoor.style.opacity = bathroom[3];
+
+        entranceLight.style.opacity = entrance[0];
+        entranceWindowLeft.style.opacity = entrance[1];
+        entranceDoor.style.opacity = entrance[2];
+
+        lVRoomLight.style.opacity = livingRoom[0];
+        lVRoomLampLeft.style.opacity = livingRoom[1];
+        lVRoomLampRight.style.opacity = livingRoom[2];
+        lVRoomTV.style.opacity = livingRoom[3];
+        lVRoomWindowBottom.style.opacity = livingRoom[4];
+
+        kitchenLight.style.opacity = kitchen[0]
+        kitchenSink.style.opacity = kitchen[1];
+        kitchenStove.style.opacity = kitchen[2];
+        kitchenMicrowave.style.opacity = kitchen[3];
+        kitchenToaster.style.opacity = kitchen[4];
+        kitchenWindowBottom.style.opacity = kitchen[5];
+        kitchenDoor.style.opacity = kitchen[6];
+
+        hallwayLight.style.opacity = laundryRoom[0];
+        hallwayWasher.style.opacity = laundryRoom[1];
+        hallwayDryer.style.opacity = laundryRoom[2];
+
+        garageHouseDoor.style.opacity = garage[0];
+        garageLightLeft.style.opacity = garage[1];
+        garageLightRight.style.opacity = garage[2];
+        garageDoorLeft.style.opacity = garage[3];
+        garageDoorRight.style.opacity = garage[4];
 
         // Update 
         setInterval(() => {
@@ -688,6 +793,93 @@ function loadSettingsScreen() {
                 power: (4500 * 5.46)/1000,
                 water: 126 
             });
+        });
+
+        // Random Dancing
+        buttonMode1.addEventListener("click", () => {
+
+        });
+
+        // Lockdown
+        buttonMode2.addEventListener("click", () => {
+            bedroomLeft[0] = 1;
+            bedroomLeft[4] = 0;
+            bedroomLeft[2] = 0;
+            bedroomLeft[3] = 0;
+
+            bedroomRight[0] = 1;
+            bedroomRight[4] = 0;
+            bedroomRight[2] = 0;
+            bedroomRight[3] = 0;
+
+            bedroomMaster[0] = 1;
+            bedroomMaster[5] = 0;
+            bedroomMaster[3] = 0;
+            bedroomMaster[4] = 0;
+
+            bathroom[0] = 1;
+            bathroom[3] = 0;
+            bathroom[2] = 0;
+
+            entrance[0] = 1;
+            entrance[2] = 0;
+            entrance[1] = 0;
+
+            livingRoom[0] = 1;
+            livingRoom[4] = 0;
+
+            kitchen[0] = 1;
+            kitchen[6] = 0;
+            kitchen[5] = 0;
+
+            laundryRoom[0] = 1;
+
+            garage[1] = 1;
+            garage[2] = 1;
+            garage[0] = 0;
+            garage[3] = 0;
+            garage[4] = 0;
+         });
+
+        // Open house
+        buttonMode3.addEventListener("click", () => {
+            bedroomLeft[0] = 1;
+            bedroomLeft[4] = 1;
+            bedroomLeft[2] = 1;
+            bedroomLeft[3] = 1;
+
+            bedroomRight[0] = 1;
+            bedroomRight[4] = 1;
+            bedroomRight[2] = 1;
+            bedroomRight[3] = 1;
+
+            bedroomMaster[0] = 1;
+            bedroomMaster[5] = 1;
+            bedroomMaster[3] = 1;
+            bedroomMaster[4] = 1;
+
+            bathroom[0] = 1;
+            bathroom[3] = 1;
+            bathroom[2] = 1;
+
+            entrance[0] = 1;
+            entrance[2] = 1;
+            entrance[1] = 1;
+
+            livingRoom[0] = 1;
+            livingRoom[4] = 1;
+
+            kitchen[0] = 1;
+            kitchen[6] = 1;
+            kitchen[5] = 1;
+
+            laundryRoom[0] = 1;
+
+            garage[1] = 1;
+            garage[2] = 1;
+            garage[0] = 1;
+            garage[3] = 1;
+            garage[4] = 1;
         });
     });
 }

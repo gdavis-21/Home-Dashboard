@@ -40,7 +40,8 @@ class BedroomMaster(models.Model):
     ceilingLight = models.BooleanField(default = False)
     lamp = models.BooleanField(default = False)
     tv = models.BooleanField(default = False)
-    topWindow = models.BooleanField(default = False)
+    leftWindow = models.BooleanField(default = False)
+    rightWindow = models.BooleanField(default = False)
     door = models.BooleanField(default = False)
 
     def __str__(self):
@@ -48,7 +49,6 @@ class BedroomMaster(models.Model):
 
 class Bathroom(models.Model):
     ceilingLight = models.BooleanField(default = False)
-    bathtub = models.BooleanField(default = False)
     sink = models.BooleanField(default = False)
     leftWindow = models.BooleanField(default = False)
     door = models.BooleanField(default = False)
@@ -64,7 +64,6 @@ class Entrance(models.Model):
     def __str__(self):
         return f"Light: {self.ceilingLight}, LWindow: {self.leftWindow}, Door: {self.door}"
 
-
 class LivingRoom(models.Model):
     ceilingLight = models.BooleanField(default = False)
     leftLamp = models.BooleanField(default = False)
@@ -79,9 +78,9 @@ class Kitchen(models.Model):
     ceilingLight = models.BooleanField(default = False)
     sink = models.BooleanField(default = False)
     stove = models.BooleanField(default = False)
-    oven = models.BooleanField(default = False)
-    dishwasher = models.BooleanField(default = False)
     microwave = models.BooleanField(default = False)
+    toaster = models.BooleanField(default = False)
+    window = models.BooleanField(default=False)
     door = models.BooleanField(default = False)
 
     def __str__(self):
@@ -97,10 +96,12 @@ class LaundryRoom(models.Model):
         return f"Light: {self.ceilingLight}, Washer: {self.washer}, Dryer: {self.dryer}"
 
 class Garage(models.Model):
+    garageHouseDoor = models.BooleanField(default = False)
     ceilingLightLeft = models.BooleanField(default = False)
     ceilingLightRight = models.BooleanField(default = False)
     doorLeft = models.BooleanField(default = False)
     doorRight = models.BooleanField(default = False)
+
 
     def __str__(self):
         return f"LLight: {self.ceilingLightLeft}, RLight: {self.ceilingLightRight}, LDoor: {self.doorLeft}, RDoor: {self.doorRight}"
